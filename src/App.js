@@ -17,12 +17,13 @@ const App = () => {
   const [NFTmessage, setNFTMessage] = useState("");
   const [NFTlink, setNFTLink] = useState("");
   const [isMinting, setIsMinting] = useState("");
+  const [networkMessage, setNetworkMessage] = useState("");
 
-  const checkIfWalletIsConnected = async () => {
+  const connectionStatus = async () => {
     const { ethereum } = window;
 
     if (!ethereum) {
-      console.log("Make sure you have MetaMask");
+      setNetworkMessage("Make sure you have MetaMask");
       return;
     } else {
       let chainId = await ethereum.request({ method: "eth_chainId" });
@@ -31,8 +32,24 @@ const App = () => {
       // String, hex code of the chainId of the Rinkebey test network
       const rinkebyChainId = "0x4";
       if (chainId !== rinkebyChainId) {
-        alert("You are not connected to the Rinkeby Test Network!");
+        setNetworkMessage(
+          "You are not connected to the Rinkeby Test Network! Minting isn't possible!"
+        );
+        return true;
+      } else if (chainId === rinkebyChainId) {
+        setNetworkMessage("You are connected to the Rinkeby Test Network");
       }
+    }
+  };
+
+  const checkIfWalletIsConnected = async () => {
+    const { ethereum } = window;
+
+    if (!ethereum) {
+      console.log("Make sure you have MetaMask");
+      return;
+    } else {
+      connectionStatus();
       console.log("Wallet Connected", ethereum);
 
       const provider = new ethers.providers.Web3Provider(ethereum);
@@ -85,7 +102,7 @@ const App = () => {
        */
       console.log("Connected", accounts[0]);
       setCurrentAccount(accounts[0]);
-
+      connectionStatus();
       // Setup listener! This is for the case where a user comes to our site
       // and connected their wallet for the first time.
       setupEventListener();
@@ -169,6 +186,18 @@ const App = () => {
     }
   };
 
+  const messageStyle = {
+    fontSize: "18px",
+    margin: "15px auto",
+    width: "60%",
+  };
+
+  const Rinkeby = () => (
+    <div style={messageStyle} className="gradient-text">
+      {networkMessage}
+    </div>
+  );
+
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
@@ -182,11 +211,6 @@ const App = () => {
       Connect to Wallet
     </button>
   );
-  const messageStyle = {
-    fontSize: "18px",
-    margin: "15px auto",
-    width: "60%",
-  };
   // Render Message
   const NFTMintedMessage = () => {
     return (
@@ -203,7 +227,7 @@ const App = () => {
     return (
       <div class="out">
         <div class="fade-in">
-          <div class="container">
+          <div class="loader_container">
             <div class="one common"></div>
             <div class="two common"></div>
             <div class="three common"></div>
@@ -231,6 +255,7 @@ const App = () => {
             You have minted {mintCount}/{TOTAL_MINT_COUNT}{" "}
             <span className="gradient-text">NFTs</span>
           </p>
+          {connectionStatus ? <Rinkeby /> : ""}
           {NFTmessage ? <NFTMintedMessage /> : ""}
           {currentAccount === "" ? (
             <div>{renderNotConnectedContainer()}</div>

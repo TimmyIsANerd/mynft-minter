@@ -133,7 +133,7 @@ body {
   overflow: hidden;
 }
 
-.container {
+.loader_container {
   width: 40vw;
   height: 40vw;
   position: absolute;
@@ -400,7 +400,7 @@ body {
   }
 }
 
-.container {
+.loader_container {
   animation: container 5s linear infinite;
   -moz-animation: container 5s linear infinite;
   /* Firefox */
