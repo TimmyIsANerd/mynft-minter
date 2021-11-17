@@ -16,6 +16,7 @@ const App = () => {
   const [mintCount, setMintCount] = useState(0);
   const [NFTmessage, setNFTMessage] = useState("");
   const [NFTlink, setNFTLink] = useState("");
+  const [isMinting, setIsMinting] = useState("");
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
@@ -197,6 +198,28 @@ const App = () => {
       </div>
     );
   };
+  // Loading Animation
+  const Loader = () => {
+    return (
+      <div class="out">
+        <div class="fade-in">
+          <div class="container">
+            <div class="one common"></div>
+            <div class="two common"></div>
+            <div class="three common"></div>
+            <div class="four common"></div>
+            <div class="five common"></div>
+            <div class="six common"></div>
+            <div class="seven common"></div>
+            <div class="eight common"></div>
+          </div>
+          <div class="bar">
+            <div class="progress"></div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="App">
@@ -220,4 +243,18 @@ const App = () => {
             </button>
           )}
         </div>
-        <div className="foote
+        <div className="footer-container">
+          <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
+          <a
+            className="footer-text"
+            href={TWITTER_LINK}
+            target="_blank"
+            rel="noreferrer"
+          >{`built on @${TWITTER_HANDLE}`}</a>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default App;
