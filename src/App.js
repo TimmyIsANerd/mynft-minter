@@ -5,9 +5,9 @@ import { ethers } from "ethers";
 import MyEpicNFT from "./utils/MyEpicNFT.json";
 
 // Constants
-const TWITTER_HANDLE = "_buildspace";
+const TWITTER_HANDLE = "timmyisanerd_";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-const OPENSEA_LINK = "";
+const OPENSEA_LINK = "https://testnets.opensea.io/collection/timmynft";
 const TOTAL_MINT_COUNT = 50;
 const CONTRACT_ADDRESS = "0xB0dDa81814730abD6Fe3308C634F599D75Cea5DC";
 
@@ -16,7 +16,7 @@ const App = () => {
   const [mintCount, setMintCount] = useState(0);
   const [NFTmessage, setNFTMessage] = useState("");
   const [NFTlink, setNFTLink] = useState("");
-  const [isMinting, setIsMinting] = useState("");
+  const [isMinting, setIsMinting] = useState(false);
   const [networkMessage, setNetworkMessage] = useState("");
 
   const connectionStatus = async () => {
@@ -103,6 +103,18 @@ const App = () => {
       console.log("Connected", accounts[0]);
       setCurrentAccount(accounts[0]);
       connectionStatus();
+
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      const connectedContract = new ethers.Contract(
+        CONTRACT_ADDRESS,
+        MyEpicNFT.abi,
+        signer
+      );
+
+      let mintCount = await connectedContract.getTotalNoOfAttempts();
+      console.log("Retrieved Total No. of Attempts", mintCount.toNumber());
+      setMintCount(mintCount.toNumber());
       // Setup listener! This is for the case where a user comes to our site
       // and connected their wallet for the first time.
       setupEventListener();
@@ -161,7 +173,7 @@ const App = () => {
           MyEpicNFT.abi,
           signer
         );
-
+        setIsMinting(true);
         let mintCount = await connectedContract.getTotalNoOfAttempts();
         console.log("Retrieved Total No. of Attempts", mintCount.toNumber());
 
@@ -178,6 +190,7 @@ const App = () => {
         console.log(
           `Transaction Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`
         );
+        setIsMinting(false);
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -211,6 +224,7 @@ const App = () => {
       Connect to Wallet
     </button>
   );
+
   // Render Message
   const NFTMintedMessage = () => {
     return (
@@ -218,6 +232,10 @@ const App = () => {
         {NFTmessage} <br />
         <a href={NFTlink} target="_blank">
           {NFTlink}
+        </a>{" "}
+        <br />
+        <a href={OPENSEA_LINK} target="_blank">
+          <button className="cta-button gradient-text">🌊 View Collection on OpenSea</button>
         </a>
       </div>
     );
@@ -227,7 +245,7 @@ const App = () => {
     return (
       <div class="out">
         <div class="fade-in">
-          <div class="loader_container">
+          {/* <div class="loader_container">
             <div class="one common"></div>
             <div class="two common"></div>
             <div class="three common"></div>
@@ -236,15 +254,26 @@ const App = () => {
             <div class="six common"></div>
             <div class="seven common"></div>
             <div class="eight common"></div>
-          </div>
-          <div class="bar">
+          </div> */}
+          <div class="gradient-text">Minting NFT...</div>
+          {/* <div class="bar">
             <div class="progress"></div>
-          </div>
+          </div> */}
         </div>
       </div>
     );
   };
-
+  const showLoader = () => {
+    setIsMinting(true);
+  };
+  const MintButton = () => (
+    <button
+      onClick={askContractToMintNft}
+      className="cta-button connect-wallet-button"
+    >
+      Mint NFT
+    </button>
+  );
   return (
     <div className="App">
       <div className="container">
@@ -255,17 +284,13 @@ const App = () => {
             You have minted {mintCount}/{TOTAL_MINT_COUNT}{" "}
             <span className="gradient-text">NFTs</span>
           </p>
+          {isMinting ? <Loader /> : ""}
           {connectionStatus ? <Rinkeby /> : ""}
           {NFTmessage ? <NFTMintedMessage /> : ""}
           {currentAccount === "" ? (
             <div>{renderNotConnectedContainer()}</div>
           ) : (
-            <button
-              onClick={askContractToMintNft}
-              className="cta-button connect-wallet-button"
-            >
-              Mint NFT
-            </button>
+            <MintButton />
           )}
         </div>
         <div className="footer-container">
@@ -275,7 +300,7 @@ const App = () => {
             href={TWITTER_LINK}
             target="_blank"
             rel="noreferrer"
-          >{`built on @${TWITTER_HANDLE}`}</a>
+          >{`@${TWITTER_HANDLE}`}</a>
         </div>
       </div>
     </div>
