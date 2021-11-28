@@ -281,7 +281,7 @@ const App = () => {
           <p className="header gradient-text">Fight Results NFT Collection</p>
           <p className="sub-text">
             Each unique. Each beautiful. Discover your NFT today. <br />
-            You have minted {mintCount}/{TOTAL_MINT_COUNT}{" "}
+            Total NFT Minted {mintCount}/{TOTAL_MINT_COUNT}{" "}
             <span className="gradient-text">NFTs</span>
           </p>
           {isMinting ? <Loader /> : ""}
