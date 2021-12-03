@@ -213,7 +213,7 @@ const App = () => {
 
   useEffect(() => {
     checkIfWalletIsConnected();
-  }, []);
+  });
 
   // Render Methods
   const renderNotConnectedContainer = () => (
@@ -230,12 +230,12 @@ const App = () => {
     return (
       <div style={messageStyle} className="gradient-text">
         {NFTmessage} <br />
-        <a href={NFTlink} target="_blank">
+        <a href={NFTlink} target="_blank" rel="noopener noreferrer">
           {NFTlink}
         </a>{" "}
         <br />
-        <a href={OPENSEA_LINK} target="_blank">
-          <button className="cta-button gradient-text">🌊 View Collection on OpenSea</button>
+        <a href={OPENSEA_LINK} target="_blank" rel="noopener noreferrer">
+          <button className="cta-button gradient-text"><span role="img" aria-label="waves emoji">🌊</span> View Collection on OpenSea</button>
         </a>
       </div>
     );
@@ -263,9 +263,9 @@ const App = () => {
       </div>
     );
   };
-  const showLoader = () => {
-    setIsMinting(true);
-  };
+  // const showLoader = () => {
+  //   setIsMinting(true);
+  // };
   const MintButton = () => (
     <button
       onClick={askContractToMintNft}
@@ -299,7 +299,7 @@ const App = () => {
             className="footer-text"
             href={TWITTER_LINK}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >{`@${TWITTER_HANDLE}`}</a>
         </div>
       </div>
